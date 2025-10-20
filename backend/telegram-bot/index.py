@@ -66,18 +66,15 @@ def handler(event: Dict[str, Any], context: Any) -> Dict[str, Any]:
     }
 
 def send_message(chat_id: int, text: str, parse_mode: str = 'HTML') -> None:
-    data = {
-        'chat_id': chat_id,
+    params = {
+        'chat_id': str(chat_id),
         'text': text,
         'parse_mode': parse_mode
     }
     
     try:
-        req = urllib.request.Request(
-            f"{TELEGRAM_API}/sendMessage",
-            data=json.dumps(data).encode('utf-8'),
-            headers={'Content-Type': 'application/json'}
-        )
+        url = f"{TELEGRAM_API}/sendMessage?" + urllib.parse.urlencode(params)
+        req = urllib.request.Request(url)
         
         with urllib.request.urlopen(req) as response:
             response.read()
